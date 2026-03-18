@@ -1,0 +1,2152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Woody's Barber Shop | Est. 1971 | Myrtle Beach, SC</title>
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;600;700;900&family=Instrument+Serif:ital@0;1&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #0C0B09;
+  --bg2: #111009;
+  --bg3: #161410;
+  --bg4: #1C1A15;
+  --bg5: #23201A;
+  --gold: #B22234;
+  --gold2: #FFFFFF;
+  --gold3: #3C3B6E;
+  --gold-dim: rgba(178,34,52,0.15);
+  --white: #F2EDE4;
+  --off: #C8BFA8;
+  --muted: #6B6355;
+  --red: #B33A2A;
+  --line: rgba(200,146,42,0.12);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--white);
+  font-family: 'Space Grotesk', sans-serif;
+  overflow-x: hidden;
+}
+
+/* PAGE VISIBILITY */
+.page { display: none; }
+.page.active { display: block; position: relative; z-index: 1; }
+
+::-webkit-scrollbar { width: 3px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: var(--gold); }
+
+/* ===== LOADING SCREEN ===== */
+#loader {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  z-index: 99999;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  transition: opacity 0.8s ease;
+}
+
+.loader-text {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 6vw, 5rem);
+  font-weight: 900;
+  color: var(--white);
+  letter-spacing: 4px;
+  overflow: hidden;
+}
+
+.loader-text span {
+  display: inline-block;
+  animation: slideUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(100%);
+}
+
+.loader-text span:nth-child(1) { animation-delay: 0.1s; }
+.loader-text span:nth-child(2) { animation-delay: 0.15s; color: var(--gold); }
+.loader-text span:nth-child(3) { animation-delay: 0.2s; }
+.loader-text span:nth-child(4) { animation-delay: 0.25s; }
+.loader-text span:nth-child(5) { animation-delay: 0.3s; }
+.loader-text span:nth-child(6) { animation-delay: 0.35s; }
+.loader-text span:nth-child(7) { animation-delay: 0.4s; color: var(--gold); }
+
+.loader-sub {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 8px;
+  color: var(--muted);
+  text-transform: uppercase;
+  animation: fadeIn 0.5s 0.8s ease forwards;
+  opacity: 0;
+}
+
+.loader-bar {
+  width: 200px;
+  height: 1px;
+  background: var(--bg4);
+  overflow: hidden;
+  animation: fadeIn 0.5s 0.5s ease forwards;
+  opacity: 0;
+}
+
+.loader-bar-fill {
+  height: 100%;
+  background: var(--gold);
+  width: 0;
+  animation: loadBar 1.2s 0.6s ease forwards;
+}
+
+@keyframes loadBar { to { width: 100%; } }
+@keyframes slideUp { to { opacity: 1; transform: translateY(0); } }
+@keyframes fadeIn { to { opacity: 1; } }
+
+/* ===== TICKER ===== */
+.ticker {
+  background: #B22234;
+  padding: 9px 0;
+  overflow: hidden;
+  white-space: nowrap;
+  position: relative;
+  z-index: 100;
+}
+
+.ticker-track {
+  display: inline-flex;
+  gap: 48px;
+  animation: tickerMove 22s linear infinite;
+}
+
+.ticker-track span {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--bg);
+}
+
+.ticker-track .dot { opacity: 0.3; }
+
+@keyframes tickerMove { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+
+/* ===== NAV ===== */
+nav {
+  position: sticky; z-index: 998;
+  top: 0;
+  z-index: 998;
+  background: rgba(12,11,9,0.96);
+  backdrop-filter: blur(24px);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 48px;
+  height: 72px;
+}
+
+.nav-logo {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.1rem;
+  font-weight: 900;
+  letter-spacing: 4px;
+  color: var(--white);
+  text-decoration: none;
+  cursor: pointer;
+}
+.nav-logo em { color: var(--gold); font-style: normal; }
+
+.nav-center {
+  display: flex;
+  gap: 0;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+}
+
+.nav-center button, .nav-center a {
+  padding: 10px 24px;
+  background: transparent;
+  border: none;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 500;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s;
+  border-right: 1px solid var(--line);
+}
+.nav-center button:last-child, .nav-center a:last-child { border-right: none; }
+.nav-center button:hover, .nav-center a:hover { color: var(--gold); background: var(--gold-dim); }
+.nav-center button.active-page { color: var(--gold); background: var(--gold-dim); }
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.nav-page-btn {
+  padding: 10px 20px;
+  background: transparent;
+  border: 1px solid var(--line);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--off);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.nav-page-btn:hover { border-color: var(--gold); color: var(--gold); }
+.nav-page-btn.active-tab { background: var(--gold); color: var(--bg); border-color: var(--gold); }
+
+/* ===== PAGE 1 — MAIN ===== */
+
+/* HERO */
+.hero {
+  min-height: calc(100vh - 108px);
+  display: grid;
+  grid-template-columns: 55% 45%;
+  position: relative;
+}
+
+.hero-left {
+  padding: 80px 64px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  border-right: 1px solid var(--line);
+  position: relative;
+}
+
+.hero-kicker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 28px;
+}
+
+.kicker-pill {
+  padding: 5px 14px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(200,146,42,0.3);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.kicker-line { flex: 1; height: 1px; background: var(--line); }
+
+.hero-h1 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(3.5rem, 7vw, 7.5rem);
+  font-weight: 900;
+  line-height: 0.9;
+  letter-spacing: -1px;
+  color: var(--white);
+  margin-bottom: 8px;
+}
+
+.hero-h1 .g { color: var(--gold); }
+.hero-h1 .outline {
+  -webkit-text-stroke: 1.5px var(--bg4);
+  color: transparent;
+  background: linear-gradient(90deg, var(--gold), var(--gold3));
+  -webkit-background-clip: text;
+  -webkit-text-stroke: 0px;
+  background-clip: text;
+}
+
+.hero-h1-sub {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(1.4rem, 3vw, 2.5rem);
+  font-style: italic;
+  color: var(--gold);
+  margin-bottom: 36px;
+  display: block;
+}
+
+.hero-divider {
+  width: 60px; height: 1px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom: 28px;
+}
+
+.hero-desc {
+  font-size: 1rem;
+  font-weight: 300;
+  line-height: 1.85;
+  color: var(--muted);
+  max-width: 420px;
+  margin-bottom: 48px;
+}
+.hero-desc strong { color: var(--off); font-weight: 500; }
+
+.hero-metrics {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  margin-bottom: 48px;
+}
+
+.metric {
+  background: var(--bg);
+  padding: 20px 16px;
+  text-align: center;
+}
+
+.metric-val {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  line-height: 1;
+  margin-bottom: 6px;
+}
+
+.metric-key {
+  font-size: 0.62rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: block;
+}
+
+.hero-btns {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-gold {
+  padding: 15px 36px;
+  background: #B22234;
+  color: var(--bg);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.btn-gold:hover { background: var(--gold3); }
+
+.btn-outline {
+  padding: 15px 36px;
+  background: transparent;
+  color: var(--off);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  border: 1px solid var(--line);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover { border-color: var(--gold); color: var(--gold); }
+
+/* hero right no longer used */
+
+.hero-visual-top {
+  flex: 2;
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 300px;
+}
+
+/* Animated barber pole SVG */
+.barber-pole-anim {
+  width: 80px;
+  height: 200px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 40px;
+  border: 2px solid rgba(200,146,42,0.3);
+}
+
+.pole-stripes {
+  width: 100%;
+  height: 400%;
+  background: repeating-linear-gradient(
+    -45deg,
+    #B33A2A 0px, #B33A2A 20px,
+    var(--white) 20px, var(--white) 40px,
+    #002868 40px, #002868 60px,
+    var(--white) 60px, var(--white) 80px
+  );
+  animation: poleScroll 3s linear infinite;
+}
+
+@keyframes poleScroll {
+  from { transform: translateY(0); }
+  to { transform: translateY(25%); }
+}
+
+.hero-visual-mid {
+  background: var(--bg4);
+  padding: 24px 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.review-mini {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  padding: 16px;
+  background: var(--bg3);
+  border-left: 2px solid var(--gold);
+  transition: border-color 0.3s;
+}
+.review-mini:hover { border-left-color: var(--gold3); }
+
+.review-mini-stars { color: var(--gold2); font-size: 0.7rem; letter-spacing: 2px; }
+.review-mini-text { font-size: 0.8rem; font-weight: 300; color: var(--off); line-height: 1.5; font-style: italic; }
+.review-mini-author { font-size: 0.62rem; font-weight: 600; letter-spacing: 3px; color: var(--gold); text-transform: uppercase; margin-top: 6px; }
+
+.hero-visual-bottom {
+  background: var(--bg3);
+  padding: 20px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.vb-stat {
+  text-align: center;
+}
+
+.vb-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+}
+
+.vb-label {
+  font-size: 0.6rem;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.vb-divider { width: 1px; height: 40px; background: var(--line); }
+
+/* ===== QUAD ROW — 4 columns full width ===== */
+.quad-row {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+  overflow: hidden;
+  min-height: 520px;
+  border-top: 1px solid var(--line);
+}
+
+.clippers-watermark {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.clippers-watermark svg {
+  width: min(700px, 90%);
+  opacity: 0.045;
+  filter: grayscale(1) brightness(2.5);
+  transform: rotate(-8deg) scale(1.3);
+}
+
+.quad-col {
+  background: var(--bg2);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  z-index: 1;
+}
+
+.qcol-header {
+  padding: 16px 20px 14px;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg3);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.qcol-tag {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  color: var(--gold);
+  opacity: 0.5;
+}
+
+.qcol-title {
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+
+.qcol-body {
+  padding: 20px;
+  flex: 1;
+  overflow-y: auto;
+}
+
+/* ===== ABOUT SECTION ===== */
+
+.panel-tabs { display: flex; border-bottom: 1px solid var(--line); }
+.ptab {
+  flex: 1; padding: 14px 10px; background: transparent;
+  border: none; border-right: 1px solid var(--line);
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.62rem;
+  font-weight: 700; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); cursor: pointer; transition: all 0.2s;
+}
+.ptab:last-child { border-right: none; }
+.ptab:hover { color: var(--white); background: var(--bg3); }
+.ptab.active { color: var(--gold); background: var(--bg3); border-bottom: 2px solid var(--gold); }
+
+.ptab-content { flex: 1; overflow-y: auto; }
+.ptab-content.hidden { display: none; }
+
+.appt-form { padding: 20px; display: flex; flex-direction: column; gap: 10px; }
+.form-row { display: flex; flex-direction: column; gap: 4px; }
+.form-row label { font-size: 0.6rem; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); }
+.form-row input, .form-row select, .form-row textarea {
+  background: var(--bg3); border: 1px solid var(--line);
+  padding: 9px 12px; color: var(--white);
+  font-family: 'Space Grotesk', sans-serif; font-size: 0.82rem;
+  font-weight: 300; outline: none; transition: border-color 0.2s; width: 100%;
+}
+.form-row input:focus, .form-row select:focus, .form-row textarea:focus { border-color: var(--gold); }
+.form-row select option { background: var(--bg3); }
+.form-row textarea { resize: none; }
+
+.appt-submit {
+  padding: 12px; background: var(--gold); color: var(--bg);
+  border: none; font-family: 'Unbounded', sans-serif; font-size: 0.58rem;
+  font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+  cursor: pointer; transition: background 0.2s; margin-top: 4px;
+}
+.appt-submit:hover { background: #CC2222; }
+.appt-note { font-size: 0.65rem; color: var(--muted); text-align: center; font-style: italic; }
+
+.appt-confirm { padding: 32px 20px; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.appt-confirm .check { font-size: 2.5rem; }
+.appt-confirm h4 { font-family: 'Unbounded', sans-serif; font-size: 0.8rem; font-weight: 700; letter-spacing: 3px; color: var(--gold); }
+.appt-confirm p { font-size: 0.82rem; color: var(--muted); line-height: 1.6; }
+
+.meet-content { padding: 20px; }
+.meet-name { font-family: 'Unbounded', sans-serif; font-size: 1.4rem; font-weight: 900; color: var(--gold); letter-spacing: 2px; }
+.meet-title { font-size: 0.62rem; font-weight: 600; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; margin-top: 4px; margin-bottom: 14px; }
+.meet-rule { width: 36px; height: 2px; background: var(--gold); margin-bottom: 14px; }
+.meet-bio { font-size: 0.82rem; font-weight: 300; line-height: 1.7; color: var(--muted); margin-bottom: 10px; }
+.meet-bio strong { color: var(--off); font-weight: 500; }
+.meet-quote { font-family: 'Instrument Serif', serif; font-style: italic; font-size: 0.9rem; color: var(--off); border-left: 2px solid var(--gold); padding: 10px 14px; background: var(--bg3); margin: 14px 0; line-height: 1.5; }
+.meet-legacy { display: flex; gap: 20px; margin-top: 16px; }
+.meet-stat { text-align: center; }
+.meet-stat span { font-family: 'Unbounded', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--gold); display: block; }
+.meet-stat small { font-size: 0.6rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+
+.panel-header-solo { padding: 14px 20px; border-bottom: 1px solid var(--line); background: var(--bg3); }
+.panel-tag { font-size: 0.62rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); }
+
+.price-list { flex: 1; overflow-y: auto; }
+.price-row { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; border-bottom: 1px solid var(--line); gap: 12px; transition: background 0.2s; }
+.price-row:hover { background: var(--bg3); }
+.price-row:last-child { border-bottom: none; }
+.price-row-senior { background: rgba(60,59,110,0.15); }
+.price-info { display: flex; flex-direction: column; gap: 2px; }
+.price-name { font-size: 0.82rem; font-weight: 600; color: var(--white); }
+.price-desc { font-size: 0.68rem; font-weight: 300; color: var(--muted); }
+.price-val { font-family: 'Unbounded', sans-serif; font-size: 1rem; font-weight: 700; color: var(--gold); white-space: nowrap; flex-shrink: 0; }
+.price-footer { padding: 12px 20px; background: var(--bg3); border-top: 1px solid var(--line); display: flex; gap: 20px; font-size: 0.65rem; font-weight: 600; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+
+/* Barber second box */
+.btab-content { overflow-y: auto; }
+.btab-content.hidden { display: none; }
+.barber-section { padding: 16px 20px; display: flex; flex-direction: column; gap: 12px; }
+.barber-label { font-size: 0.62rem; font-weight: 700; letter-spacing: 4px; text-transform: uppercase; color: var(--gold); padding-bottom: 8px; border-bottom: 1px solid var(--line); }
+.product-grid { display: flex; flex-wrap: wrap; gap: 6px; }
+.product-chip { padding: 5px 12px; background: var(--bg3); border: 1px solid var(--line); font-size: 0.68rem; font-weight: 600; letter-spacing: 1px; color: var(--off); transition: all 0.2s; }
+.product-chip:hover { border-color: var(--gold); color: var(--gold); }
+.barber-note { font-size: 0.72rem; font-weight: 300; line-height: 1.6; color: var(--muted); font-style: italic; }
+.specialty-list { display: flex; flex-direction: column; gap: 2px; }
+.specialty-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.specialty-item:last-child { border-bottom: none; }
+.spec-icon { font-size: 1rem; flex-shrink: 0; margin-top: 1px; }
+.spec-name { font-size: 0.78rem; font-weight: 600; color: var(--white); display: block; margin-bottom: 2px; }
+.spec-desc { font-size: 0.68rem; font-weight: 300; color: var(--muted); line-height: 1.5; display: block; }
+
+/* ===== ABOUT SECTION ===== */
+.about {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+}
+
+.about-left {
+  padding: 100px 64px;
+  background: var(--bg2);
+  border-right: 1px solid var(--line);
+}
+
+.about-left h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2rem, 4vw, 3.5rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 1;
+  margin-bottom: 8px;
+}
+
+.about-left h2 em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 400;
+}
+
+.section-tag {
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.about-left .rule {
+  width: 48px; height: 2px;
+  background: var(--gold);
+  margin: 24px 0;
+}
+
+.about-left p {
+  font-size: 0.95rem;
+  font-weight: 300;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.about-left p strong { color: var(--off); font-weight: 500; }
+
+.pull-quote {
+  padding: 24px;
+  border-left: 2px solid var(--gold);
+  background: var(--bg3);
+  margin: 32px 0;
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.2rem;
+  font-style: italic;
+  color: var(--off);
+  line-height: 1.6;
+}
+
+.about-right {
+  background: var(--bg3);
+  padding: 100px 64px;
+}
+
+.person-row {
+  display: flex;
+  gap: 20px;
+  padding: 28px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.3s;
+}
+.person-row:hover { padding-left: 8px; }
+.person-row:first-child { padding-top: 0; }
+.person-row:last-child { border-bottom: none; }
+
+.person-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--muted);
+  margin-top: 4px;
+  flex-shrink: 0;
+  width: 24px;
+}
+
+.person-name {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 3px;
+  letter-spacing: 1px;
+}
+
+.person-role {
+  font-size: 0.65rem;
+  font-weight: 500;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.person-bio {
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--muted);
+}
+.person-bio strong { color: var(--off); font-weight: 500; }
+
+/* Joe White */
+.joe-feature {
+  margin-top: 32px;
+  padding: 32px;
+  background: linear-gradient(135deg, rgba(200,146,42,0.1), rgba(200,146,42,0.03));
+  border: 1px solid rgba(200,146,42,0.2);
+  position: relative;
+  overflow: hidden;
+}
+
+.joe-feature::before {
+  content: '✦';
+  position: absolute;
+  top: -20px; right: 20px;
+  font-size: 8rem;
+  color: rgba(200,146,42,0.04);
+  pointer-events: none;
+}
+
+.joe-eyebrow {
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 5px;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.joe-feature h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.8rem;
+  font-style: italic;
+  color: var(--gold3);
+  margin-bottom: 14px;
+}
+
+.joe-feature p {
+  font-size: 0.88rem;
+  font-weight: 300;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.joe-feature p strong { color: var(--gold2); font-weight: 500; }
+
+/* ===== SERVICES SECTION ===== */
+.services {
+  padding: 100px 48px;
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+}
+
+.services-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  max-width: 1400px;
+  margin: 0 auto 56px;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.services-top h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2.5rem, 5vw, 5rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.9;
+}
+.services-top h2 em { font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold); font-weight: 400; }
+
+.services-top p {
+  max-width: 280px;
+  font-size: 0.88rem;
+  font-weight: 300;
+  color: var(--muted);
+  line-height: 1.7;
+}
+
+.services-list {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.svc {
+  background: var(--bg2);
+  padding: 36px 28px;
+  position: relative;
+  overflow: hidden;
+  transition: background 0.3s;
+}
+
+.svc:hover { background: var(--bg3); }
+
+.svc::after {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0;
+  width: 0; height: 2px;
+  background: var(--gold);
+  transition: width 0.4s;
+}
+.svc:hover::after { width: 100%; }
+
+.svc-n {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: rgba(200,146,42,0.08);
+  line-height: 1;
+  margin-bottom: 20px;
+  display: block;
+}
+
+.svc h3 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--white);
+  margin-bottom: 12px;
+}
+
+.svc p {
+  font-size: 0.82rem;
+  font-weight: 300;
+  line-height: 1.7;
+  color: var(--muted);
+}
+
+/* ===== HOURS BAND ===== */
+.hours-band {
+  background: var(--gold);
+  display: flex;
+  border-top: 1px solid rgba(200,146,42,0.3);
+}
+
+.h-col {
+  flex: 1;
+  padding: 28px 16px;
+  text-align: center;
+  border-right: 1px solid rgba(0,0,0,0.1);
+  cursor: default;
+  transition: background 0.2s;
+}
+.h-col:last-child { border: none; }
+.h-col:hover { background: rgba(0,0,0,0.07); }
+.h-col.shut { opacity: 0.3; }
+.h-col.active-day { background: rgba(0,0,0,0.12); }
+
+.h-d {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.5rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: rgba(0,0,0,0.55);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 6px;
+}
+
+.h-t {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  display: block;
+}
+
+.h-col.shut .h-t { color: rgba(0,0,0,0.3); }
+.h-col.active-day .h-d { color: rgba(0,0,0,0.8); }
+
+/* ===== PAGE 2 — REVIEWS & VISIT ===== */
+
+/* Reviews hero */
+.reviews-hero {
+  padding: 100px 48px 80px;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--line);
+  position: relative;
+  overflow: hidden;
+}
+
+.reviews-hero::before {
+  content: '"';
+  position: absolute;
+  top: -60px; right: 40px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 40rem;
+  line-height: 1;
+  color: rgba(200,146,42,0.03);
+  pointer-events: none;
+}
+
+.reviews-hero-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 40px;
+  flex-wrap: wrap;
+}
+
+.reviews-hero h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(3rem, 7vw, 7rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.88;
+}
+
+.reviews-hero h2 em {
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  color: var(--gold);
+  font-weight: 400;
+}
+
+.reviews-aggregate {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.agg-block { text-align: right; }
+.agg-num {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 2.5rem;
+  font-weight: 900;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+.agg-stars { color: var(--gold2); font-size: 1.1rem; display: block; margin: 4px 0; }
+.agg-label { font-size: 0.65rem; letter-spacing: 3px; color: var(--muted); text-transform: uppercase; }
+
+/* Reviews grid */
+.reviews-section {
+  padding: 80px 48px;
+  background: var(--bg);
+}
+
+.reviews-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.rv {
+  background: var(--bg2);
+  padding: 40px 36px;
+  position: relative;
+  transition: background 0.2s;
+}
+.rv:hover { background: var(--bg3); }
+
+.rv-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.rv-stars { color: var(--gold2); font-size: 0.85rem; letter-spacing: 2px; }
+.rv-platform {
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+}
+
+.rv-text {
+  font-family: 'Instrument Serif', serif;
+  font-size: 1.05rem;
+  font-style: italic;
+  line-height: 1.65;
+  color: var(--off);
+  margin-bottom: 24px;
+}
+
+.rv-bottom {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rv-author {
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--gold);
+  text-transform: uppercase;
+}
+
+.rv-date {
+  font-size: 0.62rem;
+  color: var(--muted);
+}
+
+.rv-quote-mark {
+  position: absolute;
+  bottom: 16px; right: 20px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 4rem;
+  color: rgba(200,146,42,0.05);
+  line-height: 1;
+}
+
+/* Featured big review */
+.rv-featured {
+  grid-column: span 2;
+  background: linear-gradient(135deg, rgba(200,146,42,0.07), rgba(200,146,42,0.02));
+  border: 1px solid rgba(200,146,42,0.15);
+}
+
+.rv-featured .rv-text {
+  font-size: 1.3rem;
+  color: var(--white);
+}
+
+/* Review sources CTA */
+.review-sources {
+  max-width: 1400px;
+  margin: 48px auto 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1px;
+  background: var(--line);
+}
+
+.source-card {
+  background: var(--bg2);
+  padding: 28px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  text-decoration: none;
+  transition: background 0.2s;
+  border-bottom: 2px solid transparent;
+}
+.source-card:hover { background: var(--bg3); }
+.source-card:hover { border-bottom-color: var(--gold); }
+
+.source-info h4 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--white);
+  margin-bottom: 4px;
+}
+
+.source-info p {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+.source-rating {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+.source-arrow {
+  font-size: 1rem;
+  color: var(--muted);
+  transition: color 0.2s, transform 0.2s;
+}
+.source-card:hover .source-arrow { color: var(--gold); transform: translateX(4px); }
+
+/* ===== VISIT SECTION ===== */
+.visit {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border-top: 1px solid var(--line);
+  min-height: 600px;
+}
+
+.visit-left {
+  padding: 80px 64px;
+  background: var(--bg2);
+  border-right: 1px solid var(--line);
+}
+
+.visit-left h2 {
+  font-family: 'Unbounded', sans-serif;
+  font-size: clamp(2.5rem, 4vw, 4rem);
+  font-weight: 900;
+  color: var(--white);
+  line-height: 0.9;
+  margin-bottom: 56px;
+}
+.visit-left h2 em { font-family: 'Instrument Serif', serif; font-style: italic; color: var(--gold); font-weight: 400; }
+
+.contact-item {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  padding: 22px 0;
+  border-bottom: 1px solid var(--line);
+  transition: padding-left 0.2s;
+}
+.contact-item:hover { padding-left: 6px; }
+.contact-item:last-child { border: none; }
+
+.ci-icon {
+  width: 36px; height: 36px;
+  background: var(--gold-dim);
+  border: 1px solid rgba(200,146,42,0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  flex-shrink: 0;
+}
+
+.ci-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 4px;
+  color: var(--gold);
+  text-transform: uppercase;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.ci-value a, .ci-value p {
+  font-size: 0.95rem;
+  font-weight: 400;
+  color: var(--off);
+  text-decoration: none;
+  display: block;
+  line-height: 1.5;
+  transition: color 0.2s;
+}
+.ci-value a:hover { color: var(--gold); }
+
+.visit-right {
+  background: var(--bg3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-container {
+  flex: 1;
+  position: relative;
+  min-height: 400px;
+}
+
+.map-container iframe {
+  width: 100%; height: 100%;
+  border: none;
+  filter: grayscale(1) brightness(0.35) contrast(1.3);
+  position: absolute;
+  inset: 0;
+}
+
+.map-overlay {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 24px 28px;
+  background: linear-gradient(0deg, rgba(12,11,9,0.98) 0%, transparent 100%);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.map-addr {
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--off);
+  letter-spacing: 1px;
+}
+
+.map-btn {
+  padding: 10px 20px;
+  background: var(--gold);
+  color: var(--bg);
+  font-family: 'Unbounded', sans-serif;
+  font-size: 0.55rem;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 0.2s;
+}
+.map-btn:hover { background: var(--gold3); }
+
+/* ===== FOOTER ===== */
+footer {
+  background: var(--bg);
+  border-top: 1px solid var(--line);
+  padding: 48px;
+}
+
+.footer-inner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 40px;
+  align-items: center;
+}
+
+.footer-brand {
+  font-family: 'Unbounded', sans-serif;
+  font-size: 1.3rem;
+  font-weight: 900;
+  letter-spacing: 3px;
+  color: var(--white);
+}
+.footer-brand em { color: var(--gold); font-style: normal; }
+.footer-brand small {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 300;
+  letter-spacing: 5px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+
+.footer-copy {
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.footer-copy a { color: var(--gold); text-decoration: none; }
+
+.footer-right {
+  text-align: right;
+  font-family: 'Instrument Serif', serif;
+  font-style: italic;
+  font-size: 1rem;
+  color: rgba(200,146,42,0.35);
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fade-in {
+  opacity: 0;
+  transform: translateY(16px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.fade-in.visible { opacity: 1; transform: translateY(0); }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 1100px) {
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { min-height: 400px; }
+  .about { grid-template-columns: 1fr; }
+  .visit { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr 1fr; }
+  .rv-featured { grid-column: span 2; }
+  .review-sources { grid-template-columns: 1fr; }
+  .services-list { grid-template-columns: 1fr 1fr; }
+  .footer-inner { grid-template-columns: 1fr; text-align: center; }
+  .footer-right { text-align: center; }
+  nav { padding: 0 20px; }
+  .nav-center { display: none; }
+  .hero-left, .about-left, .about-right, .visit-left { padding: 60px 28px; }
+  .services { padding: 60px 24px; }
+  .reviews-section { padding: 60px 24px; }
+  .reviews-hero { padding: 60px 24px; }
+}
+
+@media (max-width: 700px) {
+  .reviews-grid { grid-template-columns: 1fr; }
+  .rv-featured { grid-column: span 1; }
+  .services-list { grid-template-columns: 1fr; }
+  .hero-metrics { grid-template-columns: 1fr 1fr; }
+  .hours-band { flex-wrap: wrap; }
+  .h-col { min-width: 100px; }
+  .footer-inner { gap: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="loader-text">
+    <span>W</span><span>O</span><span>O</span><span>D</span><span>Y</span><span>'</span><span>S</span>
+  </div>
+  <div class="loader-bar"><div class="loader-bar-fill"></div></div>
+  <div class="loader-sub">Est. 1971 · Myrtle Beach, SC</div>
+</div>
+
+<!-- TICKER -->
+
+<!-- Elvis watermark -->
+<div id="elvis-watermark" style="
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  overflow:hidden;
+">
+  <img src="data:image/png;base64,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" alt="" style="
+    position:absolute;
+    top:50%; left:50%;
+    transform:translate(-50%,-50%);
+    width:min(700px,90vw);
+    height:auto;
+    object-fit:cover;
+    filter: grayscale(1) brightness(0.18) contrast(1.1);
+    opacity:0.55;
+    mask-image: radial-gradient(ellipse 60% 65% at 50% 45%, black 20%, transparent 80%);
+    -webkit-mask-image: radial-gradient(ellipse 60% 65% at 50% 45%, black 20%, transparent 80%);
+    mix-blend-mode: luminosity;
+  ">
+</div>
+<div class="ticker">
+  <div class="ticker-track">
+    <span>✦ Woody's Barber Shop</span><span class="dot">—</span>
+    <span>✦ Est. 1971</span><span class="dot">—</span>
+    <span>✦ 4.7 Stars · 112 Reviews</span><span class="dot">—</span>
+    <span>✦ 938 Broadway St, Myrtle Beach SC</span><span class="dot">—</span>
+    <span>✦ Flat Top Specialists</span><span class="dot">—</span>
+    <span>✦ Walk-Ins Always Welcome</span><span class="dot">—</span>
+    <span>✦ (843) 448-6535</span><span class="dot">—</span>
+    <span>✦ Cash Only · Senior Discount</span><span class="dot">—</span>
+    <!-- repeat -->
+    <span>✦ Woody's Barber Shop</span><span class="dot">—</span>
+    <span>✦ Est. 1971</span><span class="dot">—</span>
+    <span>✦ 4.7 Stars · 112 Reviews</span><span class="dot">—</span>
+    <span>✦ 938 Broadway St, Myrtle Beach SC</span><span class="dot">—</span>
+    <span>✦ Flat Top Specialists</span><span class="dot">—</span>
+    <span>✦ Walk-Ins Always Welcome</span><span class="dot">—</span>
+    <span>✦ (843) 448-6535</span><span class="dot">—</span>
+    <span>✦ Cash Only · Senior Discount</span><span class="dot">—</span>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <span class="nav-logo" onclick="showPage('p1')">WOODY<em>'S</em></span>
+
+  <div class="nav-center">
+    <button onclick="scrollToSection('#about-section')">Story</button>
+    <button onclick="scrollToSection('#services-section')">Services</button>
+    <button onclick="scrollToSection('#hours-section')">Hours</button>
+  </div>
+
+  <div class="nav-right">
+    <button class="nav-page-btn active-tab" id="btn-p1" onclick="showPage('p1')">The Shop</button>
+    <button class="nav-page-btn" id="btn-p2" onclick="showPage('p2')">Reviews & Visit</button>
+  </div>
+</nav>
+
+<!-- ===== PAGE 1 ===== -->
+<div class="page active" id="p1">
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-left">
+      <div class="hero-kicker">
+        <div class="kicker-pill">Est. 1971</div>
+        <div class="kicker-pill">Myrtle Beach, SC</div>
+        <div class="kicker-line"></div>
+      </div>
+
+      <h1 class="hero-h1">
+        WOODY<span class="g">'S</span><br>
+        BARBER<br>
+        <span class="outline">SHOP</span>
+      </h1>
+      <span class="hero-h1-sub">Serving the Beach Since 1971.</span>
+      <div class="hero-divider"></div>
+
+      <p class="hero-desc">
+        Elvis has been cutting hair in the same chair on Broadway Street for over <strong>54 years</strong>. Senators, governors, and generations of Myrtle Beach families have all sat where you're about to sit.
+      </p>
+
+      <div class="hero-metrics">
+        <div class="metric">
+          <span class="metric-val">4.7★</span>
+          <span class="metric-key">Rating</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">112</span>
+          <span class="metric-key">Reviews</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">54</span>
+          <span class="metric-key">Years Open</span>
+        </div>
+        <div class="metric">
+          <span class="metric-val">637</span>
+          <span class="metric-key">FB Followers</span>
+        </div>
+      </div>
+
+      <div class="hero-btns">
+        <button class="btn-gold" onclick="showPage('p2')">See Reviews & Visit</button>
+        <a href="tel:8434486535" class="btn-outline">✂ Call Now</a>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- 4-COLUMN PANEL ROW -->
+  <section style="position:relative;">
+    <div class="quad-row">
+
+      <!-- Clippers watermark behind all 4 cols -->
+      <div class="clippers-watermark" aria-hidden="true">
+        <svg viewBox="0 0 340 120" xmlns="http://www.w3.org/2000/svg" fill="none">
+          <!-- Body / housing -->
+          <rect x="10" y="35" width="240" height="50" rx="10" fill="#BBBBBB" opacity="0.9"/>
+          <!-- Top grip ridge lines -->
+          <line x1="30" y1="35" x2="30" y2="85" stroke="#888" stroke-width="1.2"/>
+          <line x1="50" y1="35" x2="50" y2="85" stroke="#888" stroke-width="1.2"/>
+          <line x1="70" y1="35" x2="70" y2="85" stroke="#888" stroke-width="1.2"/>
+          <line x1="90" y1="35" x2="90" y2="85" stroke="#888" stroke-width="1.2"/>
+          <line x1="110" y1="35" x2="110" y2="85" stroke="#888" stroke-width="1.2"/>
+          <line x1="130" y1="35" x2="130" y2="85" stroke="#888" stroke-width="1.2"/>
+          <!-- Blade housing -->
+          <rect x="245" y="42" width="80" height="36" rx="4" fill="#AAAAAA" opacity="0.9"/>
+          <!-- Blade teeth -->
+          <line x1="252" y1="78" x2="252" y2="92" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="261" y1="78" x2="261" y2="95" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="270" y1="78" x2="270" y2="92" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="279" y1="78" x2="279" y2="95" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="288" y1="78" x2="288" y2="92" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="297" y1="78" x2="297" y2="95" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="306" y1="78" x2="306" y2="92" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="315" y1="78" x2="315" y2="95" stroke="#888" stroke-width="2.5" stroke-linecap="round"/>
+          <!-- Power switch bump -->
+          <rect x="160" y="52" width="30" height="16" rx="8" fill="#999" opacity="0.85"/>
+          <!-- Cord nub -->
+          <rect x="5" y="52" width="12" height="16" rx="4" fill="#888" opacity="0.8"/>
+          <!-- Highlight sheen -->
+          <rect x="14" y="39" width="220" height="8" rx="4" fill="white" opacity="0.2"/>
+        </svg>
+      </div>
+
+      <!-- COL 1 — Meet the Barber -->
+      <div class="quad-col">
+        <div class="qcol-header">
+          <span class="qcol-tag">01</span>
+          <span class="qcol-title">Meet the Barber</span>
+        </div>
+        <div class="qcol-body">
+          <div class="meet-name">Elvis</div>
+          <div class="meet-title">Owner · Master Barber · Since 1971</div>
+          <div class="meet-rule"></div>
+          <p class="meet-bio">Started cutting hair at 18. Opened Woody's on Broadway Street in <strong>1971</strong> and never looked back.</p>
+          <p class="meet-bio">Over 54 years, <strong>senators, governors, police chiefs, and judges</strong> have sat in his chair. His wife Renee cut alongside him before becoming Horry County's Clerk of Court.</p>
+          <div class="meet-quote">"Many of the kids on that wall are adults now — still coming back, and bringing their own kids."</div>
+          <div class="meet-legacy">
+            <div class="meet-stat"><span>54</span><small>Years</small></div>
+            <div class="meet-stat"><span>4.7★</span><small>Rating</small></div>
+            <div class="meet-stat"><span>112</span><small>Reviews</small></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 2 — Book an Appointment -->
+      <div class="quad-col">
+        <div class="qcol-header">
+          <span class="qcol-tag">02</span>
+          <span class="qcol-title">Book an Appointment</span>
+        </div>
+        <div class="qcol-body">
+          <div class="appt-form" id="appt-form-main">
+            <div class="form-row">
+              <label>Your Name</label>
+              <input type="text" id="af-name" placeholder="First & Last Name"/>
+            </div>
+            <div class="form-row">
+              <label>Phone Number</label>
+              <input type="tel" id="af-phone" placeholder="(843) 000-0000"/>
+            </div>
+            <div class="form-row">
+              <label>Service</label>
+              <select id="af-service">
+                <option value="">Select a service...</option>
+                <option>Classic Haircut</option>
+                <option>Flat Top</option>
+                <option>Kids Cut</option>
+                <option>Women's Cut</option>
+                <option>Beard Trim</option>
+                <option>Cut + Beard Combo</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Preferred Day</label>
+              <select id="af-day">
+                <option value="">Select a day...</option>
+                <option>Tuesday</option>
+                <option>Wednesday</option>
+                <option>Thursday</option>
+                <option>Friday</option>
+                <option>Saturday (8AM–12PM)</option>
+              </select>
+            </div>
+            <div class="form-row">
+              <label>Message (optional)</label>
+              <textarea id="af-msg" placeholder="Any special requests..." rows="2"></textarea>
+            </div>
+            <button class="appt-submit" onclick="submitAppt()">Request Appointment</button>
+            <p class="appt-note">Walk-ins always welcome — no appointment needed!</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 3 — Services & Pricing -->
+      <div class="quad-col">
+        <div class="qcol-header">
+          <span class="qcol-tag">03</span>
+          <span class="qcol-title">Services & Pricing</span>
+        </div>
+        <div class="qcol-body" style="padding:0;">
+          <div class="price-list">
+            <div class="price-row"><div class="price-info"><span class="price-name">Classic Haircut</span><span class="price-desc">Precision cut, exactly how you ask</span></div><span class="price-val">$15</span></div>
+            <div class="price-row"><div class="price-info"><span class="price-name">Flat Top</span><span class="price-desc">Elvis's signature — perfected since 1971</span></div><span class="price-val">$18</span></div>
+            <div class="price-row"><div class="price-info"><span class="price-name">Kids Cut</span><span class="price-desc">All ages, patient & friendly</span></div><span class="price-val">$12</span></div>
+            <div class="price-row"><div class="price-info"><span class="price-name">Women's Cut</span><span class="price-desc">All styles welcomed</span></div><span class="price-val">$15</span></div>
+            <div class="price-row"><div class="price-info"><span class="price-name">Beard Trim</span><span class="price-desc">Clean lines, straight razor finish</span></div><span class="price-val">$10</span></div>
+            <div class="price-row"><div class="price-info"><span class="price-name">Cut + Beard Combo</span><span class="price-desc">Full service, head to beard</span></div><span class="price-val">$25</span></div>
+            <div class="price-row price-row-senior"><div class="price-info"><span class="price-name">Senior Discount</span><span class="price-desc">$2 off any service</span></div><span class="price-val" style="color:var(--gold3);">−$2</span></div>
+          </div>
+          <div class="price-footer">
+            <span>💵 Cash Only</span>
+            <span>🚶 Walk-Ins Welcome</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- COL 4 — Specialties & Products -->
+      <div class="quad-col">
+        <div class="qcol-header">
+          <span class="qcol-tag">04</span>
+          <span class="qcol-title">Specialties & Products</span>
+        </div>
+        <div class="qcol-body" style="padding:0;">
+          <div class="panel-tabs" style="border-bottom:1px solid var(--line);">
+            <button class="ptab active" id="btab-btn-specialties" onclick="switchBarberTab('specialties',this)">Specialties</button>
+            <button class="ptab" id="btab-btn-products" onclick="switchBarberTab('products',this)">Products</button>
+          </div>
+          <div class="btab-content" id="btab-specialties">
+            <div class="barber-section">
+              <div class="barber-label">✂ Elvis — Master Barber</div>
+              <div class="specialty-list">
+                <div class="specialty-item"><span class="spec-icon">🏆</span><div><span class="spec-name">Flat Tops</span><span class="spec-desc">54 years perfecting the most technical cut. Nobody does it better on the beach.</span></div></div>
+                <div class="specialty-item"><span class="spec-icon">✂</span><div><span class="spec-name">Classic Tapers</span><span class="spec-desc">Clean, sharp, timeless. The foundation of every great cut.</span></div></div>
+                <div class="specialty-item"><span class="spec-icon">🪒</span><div><span class="spec-name">Straight Razor Shave</span><span class="spec-desc">Hot lather, straight razor, smooth finish. A dying art kept alive.</span></div></div>
+                <div class="specialty-item"><span class="spec-icon">👦</span><div><span class="spec-name">Kids First Cuts</span><span class="spec-desc">Patient and calm with children of all ages.</span></div></div>
+                <div class="specialty-item"><span class="spec-icon">💬</span><div><span class="spec-name">Great Conversation</span><span class="spec-desc">As much a part of the experience as the cut itself.</span></div></div>
+              </div>
+            </div>
+          </div>
+          <div class="btab-content hidden" id="btab-products">
+            <div class="barber-section">
+              <div class="barber-label">✂ Elvis — Master Barber</div>
+              <div class="product-grid">
+                <div class="product-chip">Andis Masters</div>
+                <div class="product-chip">Wahl Clippers</div>
+                <div class="product-chip">Oster Classic 76</div>
+                <div class="product-chip">Clubman Pinaud</div>
+                <div class="product-chip">Lucky Tiger Tonic</div>
+                <div class="product-chip">Barbicide</div>
+                <div class="product-chip">Straight Razor</div>
+                <div class="product-chip">Hot Lather Machine</div>
+              </div>
+              <p class="barber-note">Old school tools, old school standards. Elvis has used the same trusted products for decades — nothing trendy, nothing cheap.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  </section>
+
+  <!-- ABOUT -->
+  <section class="about" id="about-section">
+    <div class="about-left fade-in">
+      <span class="section-tag">The Man Behind The Chair</span>
+      <h2>Meet<br><em>Elvis.</em></h2>
+      <div class="rule"></div>
+
+      <p>Elvis picked up his first pair of clippers at <strong>18 years old</strong> and never looked back. After barber college, he planted himself right on Broadway Street and opened Woody's in <strong>1971</strong> — and he's been there ever since.</p>
+
+      <p>Over five decades, <strong>senators, governors, police chiefs, and judges</strong> have sat in that chair. But what Elvis is most proud of? The poster boards on the wall covered with photos of children who are now grown adults — still coming back for their cuts, and now bringing their own kids.</p>
+
+      <p>His wife <strong>Renee</strong> cut hair alongside him for years before becoming <strong>Horry County's Clerk of Court</strong>. A Myrtle Beach power couple if there ever was one.</p>
+
+      <div class="pull-quote">
+        "Great Southern Hospitality and a beautiful Southern smile. If you want a great haircut, cut exactly the way you want it — stop in and visit them."
+        <br><br><small style="font-size:0.7rem; letter-spacing:3px; color:var(--gold); font-style:normal;">— Harry P., Yahoo Local</small>
+      </div>
+    </div>
+
+    <div class="about-right fade-in">
+      <span class="section-tag">The People</span>
+
+      <div class="person-row">
+        <span class="person-num">01</span>
+        <div>
+          <span class="person-name">Elvis</span>
+          <span class="person-role">Owner · Master Barber · Since 1971</span>
+          <p class="person-bio">Started cutting hair at 18, opened Woody's on Broadway Street and never left. <strong>54 years</strong> behind the same chair. Known for flat tops, great conversation, and making every single customer feel right at home.</p>
+        </div>
+      </div>
+
+      <div class="person-row">
+        <span class="person-num">02</span>
+        <div>
+          <span class="person-name">Renee</span>
+          <span class="person-role">Former Barber · Horry County Clerk of Court</span>
+          <p class="person-bio">Elvis's wife worked alongside him for years at Woody's before her career in public service took off. <strong>"We got married and she had to find another job,"</strong> Elvis says with a laugh.</p>
+        </div>
+      </div>
+
+      <div class="joe-feature">
+        <span class="joe-eyebrow">✦ Myrtle Beach Legend ✦</span>
+        <h3>Mr. Joe White</h3>
+        <p>
+          For <strong>30 years</strong>, Mr. Joe White shined shoes inside Woody's — riding his bicycle to work every single day without fail. He became such a beloved part of the community that the city named <strong>Mr. Joe White Boulevard</strong> in his honor. His original shoe shine chair and memorabilia are still inside the shop today.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SERVICES -->
+  <section class="services" id="services-section">
+    <div class="services-top fade-in">
+      <div>
+        <span class="section-tag">What We Do</span>
+        <h2>Old School<br><em>Craft.</em></h2>
+      </div>
+      <p>Precision cuts done exactly the way you ask. No shortcuts. No up-sells. No corporate script. Just Elvis, the clippers, and 54 years of skill.</p>
+    </div>
+
+    <div class="services-list">
+      <div class="svc fade-in">
+        <span class="svc-n">01</span>
+        <h3>Classic Haircut</h3>
+        <p>Elvis asks questions before he picks up the clippers. You tell him exactly what you want — and he delivers every time.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">02</span>
+        <h3>Flat Top</h3>
+        <p>The signature. Perfected since 1971. There is nobody better at a flat top on the beach — period.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">03</span>
+        <h3>Kids Cuts</h3>
+        <p>Patient, friendly, experienced with all ages. Kids who sat in that chair years ago now bring their own kids.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">04</span>
+        <h3>Women's Cuts</h3>
+        <p>Always welcomed at Woody's. Quality cuts for anyone in the chair — no attitude, no fuss.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">05</span>
+        <h3>Beard Trim</h3>
+        <p>Clean lines, sharp edges, straight razor finish. The way it was always meant to be done.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">06</span>
+        <h3>Walk-Ins Welcome</h3>
+        <p>No appointment. Ever. Show up, sit down, leave looking sharp. The Woody's way since day one.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">07</span>
+        <h3>Affordable Pricing</h3>
+        <p>Competitive prices, zero corporate markup. Cash only. Senior discount available. You pay for the cut.</p>
+      </div>
+      <div class="svc fade-in">
+        <span class="svc-n">08</span>
+        <h3>Real Conversation</h3>
+        <p>"He really engaged my nephew in conversation." Every visit feels like catching up with a friend.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- HOURS -->
+  <div class="hours-band" id="hours-section">
+    <div class="h-col shut">
+      <span class="h-d">Sunday</span>
+      <span class="h-t">CLOSED</span>
+    </div>
+    <div class="h-col shut">
+      <span class="h-d">Monday</span>
+      <span class="h-t">CLOSED</span>
+    </div>
+    <div class="h-col">
+      <span class="h-d">Tuesday</span>
+      <span class="h-t">8AM – 5:30PM</span>
+    </div>
+    <div class="h-col">
+      <span class="h-d">Wednesday</span>
+      <span class="h-t">8AM – 5:30PM</span>
+    </div>
+    <div class="h-col">
+      <span class="h-d">Thursday</span>
+      <span class="h-t">8AM – 5:30PM</span>
+    </div>
+    <div class="h-col">
+      <span class="h-d">Friday</span>
+      <span class="h-t">8AM – 5:30PM</span>
+    </div>
+    <div class="h-col">
+      <span class="h-d">Saturday</span>
+      <span class="h-t">8AM – 12PM</span>
+    </div>
+  </div>
+
+  <!-- FOOTER P1 -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">WOODY<em>'S</em><small>Barber Shop · Est. 1971</small></div>
+      <div class="footer-copy">
+        © 2025 Woody's Barber Shop<br>
+        <a href="tel:8434486535">(843) 448-6535</a> · <a href="mailto:Clipjt@aol.com">Clipjt@aol.com</a><br>
+        938 Broadway St, Myrtle Beach, SC 29577
+      </div>
+      <div class="footer-right">Serving the beach since '71.</div>
+    </div>
+  </footer>
+</div>
+
+<!-- ===== PAGE 2 — REVIEWS & VISIT ===== -->
+<div class="page" id="p2">
+
+  <!-- Reviews Hero -->
+  <section class="reviews-hero">
+    <div class="reviews-hero-inner">
+      <div>
+        <span class="section-tag">What People Are Saying</span>
+        <h2>REAL<br>TALK.<br><em>Real Cuts.</em></h2>
+      </div>
+      <div class="reviews-aggregate">
+        <div class="agg-block">
+          <span class="agg-num">4.7</span>
+          <span class="agg-stars">★★★★★</span>
+          <span class="agg-label">112 Verified Reviews</span>
+        </div>
+        <div class="agg-block">
+          <span class="agg-num">54</span>
+          <span class="agg-stars" style="color:var(--muted);">— — — — —</span>
+          <span class="agg-label">Years In Business</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Reviews Grid -->
+  <section class="reviews-section">
+    <div class="reviews-grid">
+
+      <div class="rv rv-featured fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local · September 2025</span>
+        </div>
+        <p class="rv-text">"We were visiting from Minnesota and had a wedding coming up so we googled a barber shop and ended up here. He did soooo good!! Very impressed. Very relaxed environment. Clean shop, great conversation, no complaints whatsoever. My dad looked incredible for the wedding."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Katie B. — Minnesota</span>
+          <span class="rv-date">Sept 2025</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"Small little barbershop with plenty of parking and three chairs. This is the fastest haircut I've ever gotten. I'll be back next time I'm in Myrtle Beach for sure."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Bob Z.</span>
+          <span class="rv-date">June 2025</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"Friendly gentleman who has been serving the locals over 50 years in this convenient location near 17 Business. Efficient, nice haircut. Senior discount $2. Remember to bring cash, no plastic."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Sigmund F.</span>
+          <span class="rv-date">July 2023</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"My first trip inside a barber shop since the pandemic. This was a comfortable experience for someone who is still a little Covid gun shy. Old school barber shop with 2 chairs. Highly recommend."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Michael H.</span>
+          <span class="rv-date">Nov 2021</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"Thank you Woody for taking layers upon layers of hair and transforming the Big Lebowski back to my hottie husband! I LOVE IT! Nice work!"</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Eriks B.</span>
+          <span class="rv-date">Oct 2023</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"A wonderful old school barber shop that provides up-to-date haircuts! The shop was very clean and the barber was really great. He asked lots of questions and really engaged my nephew in conversation."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Satisfied Customer</span>
+          <span class="rv-date">Jan 2024</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"Great Southern Hospitality and a beautiful Southern smile. If you want a great haircut done exactly the way you want it, stop in and visit them."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Harry P.</span>
+          <span class="rv-date">2023</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">Yahoo Local</span>
+        </div>
+        <p class="rv-text">"After trying three different places I tried Woody's. Best haircut I ever had. Great people, great haircuts, great atmosphere, good price. My go-to from now on."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Joel M.</span>
+          <span class="rv-date">Nov 2024</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+      <div class="rv fade-in">
+        <div class="rv-top">
+          <span class="rv-stars">★★★★★</span>
+          <span class="rv-platform">BestProsInTown</span>
+        </div>
+        <p class="rv-text">"Walk-in basis, short wait if any. Prices are reasonable and haircuts are high quality. Loyal customer base — some clients have been regulars for several years. Friendly atmosphere where you can enjoy great conversation."</p>
+        <div class="rv-bottom">
+          <span class="rv-author">Verified Visitor</span>
+          <span class="rv-date">2024</span>
+        </div>
+        <div class="rv-quote-mark">"</div>
+      </div>
+
+    </div>
+
+    <!-- Source Links -->
+    <div class="review-sources">
+      <a class="source-card" href="https://www.bestprosintown.com/sc/myrtle-beach/woodys-barber-shop-/" target="_blank">
+        <div class="source-info">
+          <h4>BestProsInTown</h4>
+          <p>88 Reviews · 32 Photos</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="source-rating">4.7★</span>
+          <span class="source-arrow">→</span>
+        </div>
+      </a>
+      <a class="source-card" href="https://local.yahoo.com/info-13481279-woody-s-arcade-barber-shop-myrtle-beach" target="_blank">
+        <div class="source-info">
+          <h4>Yahoo Local</h4>
+          <p>15 Reviews</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="source-rating">4.5★</span>
+          <span class="source-arrow">→</span>
+        </div>
+      </a>
+      <a class="source-card" href="https://www.facebook.com/hairmasters1971/" target="_blank">
+        <div class="source-info">
+          <h4>Facebook</h4>
+          <p>637 Followers · Photos & Updates</p>
+        </div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <span class="source-rating" style="color:#1877F2;">f</span>
+          <span class="source-arrow">→</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Visit -->
+  <section class="visit">
+    <div class="visit-left fade-in">
+      <span class="section-tag">Find Us</span>
+      <h2>COME<br>SEE<br><em>Elvis.</em></h2>
+
+      <div class="contact-item">
+        <div class="ci-icon">📍</div>
+        <div class="ci-value">
+          <span class="ci-label">Address</span>
+          <a href="https://maps.google.com/?q=938+Broadway+St+Myrtle+Beach+SC+29577" target="_blank">938 Broadway St<br>Myrtle Beach, SC 29577</a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">✂</div>
+        <div class="ci-value">
+          <span class="ci-label">Phone</span>
+          <a href="tel:8434486535">(843) 448-6535</a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">📧</div>
+        <div class="ci-value">
+          <span class="ci-label">Email</span>
+          <a href="mailto:Clipjt@aol.com">Clipjt@aol.com</a>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">🕐</div>
+        <div class="ci-value">
+          <span class="ci-label">Hours</span>
+          <p>Tue – Fri &nbsp; 8:00 AM – 5:30 PM</p>
+          <p>Saturday &nbsp; 8:00 AM – 12:00 PM</p>
+          <p style="color:var(--muted); font-size:0.82rem; margin-top:4px;">Sun & Mon — Closed</p>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">💵</div>
+        <div class="ci-value">
+          <span class="ci-label">Payment</span>
+          <p>Cash Only · Senior Discount Available</p>
+        </div>
+      </div>
+
+      <div class="contact-item">
+        <div class="ci-icon">🚗</div>
+        <div class="ci-value">
+          <span class="ci-label">Parking</span>
+          <p>Free Private Lot · Wheelchair Accessible</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="visit-right">
+      <div class="map-container">
+        <iframe
+          src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3300!2d-78.8865!3d33.6913!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89413468f42daa0b%3A0x749b9d2b93eded4c!2sWoody's%20Barber%20Shop!5e0!3m2!1sen!2sus!4v1"
+          allowfullscreen="" loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+        <div class="map-overlay">
+          <span class="map-addr">📍 938 Broadway St · Downtown Myrtle Beach · Near Hwy 17 Business</span>
+          <a class="map-btn" href="https://maps.google.com/?q=938+Broadway+St+Myrtle+Beach+SC+29577" target="_blank">Get Directions</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer P2 -->
+  <footer>
+    <div class="footer-inner">
+      <div class="footer-brand">WOODY<em>'S</em><small>Barber Shop · Est. 1971</small></div>
+      <div class="footer-copy">
+        © 2025 Woody's Barber Shop<br>
+        <a href="tel:8434486535">(843) 448-6535</a> · <a href="mailto:Clipjt@aol.com">Clipjt@aol.com</a><br>
+        938 Broadway St, Myrtle Beach, SC 29577
+      </div>
+      <div class="footer-right">Serving the beach since '71.</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+  // ===== BARBER TABS =====
+  function switchBarberTab(tab, el) {
+    document.querySelectorAll('.btab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('btab-' + tab).classList.remove('hidden');
+    document.getElementById('btab-btn-products').classList.remove('active');
+    document.getElementById('btab-btn-specialties').classList.remove('active');
+    el.classList.add('active');
+  }
+
+  // ===== TABS =====
+  function switchTab(tab) {
+    document.querySelectorAll('.ptab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.ptab-content').forEach(c => c.classList.add('hidden'));
+    document.getElementById('tab-' + tab).classList.remove('hidden');
+    event.target.classList.add('active');
+  }
+
+  // ===== APPOINTMENT FORM =====
+  function submitAppt() {
+    const inputs = document.querySelectorAll('.appt-form input, .appt-form select, .appt-form textarea');
+    const name = inputs[0].value.trim();
+    const phone = inputs[1].value.trim();
+    const service = inputs[2].value;
+    const day = inputs[3].value;
+    if (!name || !phone || !service || !day) {
+      inputs[0].style.borderColor = !name ? 'var(--gold)' : '';
+      inputs[1].style.borderColor = !phone ? 'var(--gold)' : '';
+      inputs[2].style.borderColor = !service ? 'var(--gold)' : '';
+      inputs[3].style.borderColor = !day ? 'var(--gold)' : '';
+      return;
+    }
+    document.querySelector('.appt-form').innerHTML = `
+      <div class="appt-confirm">
+        <div class="check">✅</div>
+        <h4>Request Sent!</h4>
+        <p>Thanks <strong style="color:var(--white)">${name}</strong>! We'll confirm your <strong style="color:var(--white)">${service}</strong> on <strong style="color:var(--white)">${day}</strong>.<br><br>We'll call you at <strong style="color:var(--white)">${phone}</strong> to confirm.<br><br>Or just walk in — no appointment needed!</p>
+      </div>
+    `;
+  }
+
+  // ===== LOADER =====
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      const loader = document.getElementById('loader');
+      loader.style.opacity = '0';
+      loader.style.pointerEvents = 'none';
+      setTimeout(() => loader.style.display = 'none', 800);
+    }, 1800);
+  });
+
+  // ===== PAGE SWITCHING =====
+  function showPage(id) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    document.getElementById('btn-p1').classList.toggle('active-tab', id === 'p1');
+    document.getElementById('btn-p2').classList.toggle('active-tab', id === 'p2');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    triggerFadeIns();
+  }
+
+  // ===== SCROLL NAV =====
+  function scrollToSection(selector) {
+    const el = document.querySelector(selector);
+    if (el) el.scrollIntoView({ behavior: 'smooth' });
+  }
+
+  // ===== HOURS HIGHLIGHT =====
+  const days = ['sunday','monday','tuesday','wednesday','thursday','friday','saturday'];
+  const today = days[new Date().getDay()];
+  document.querySelectorAll('.h-col').forEach(col => {
+    if (col.querySelector('.h-d').textContent.trim().toLowerCase() === today) {
+      col.classList.add('active-day');
+    }
+  });
+
+  // ===== FADE INS =====
+  function triggerFadeIns() {
+    const obs = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.classList.add('visible');
+          obs.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('.fade-in:not(.visible)').forEach(el => obs.observe(el));
+  }
+
+  triggerFadeIns();
+</script>
+</body>
+</html>
